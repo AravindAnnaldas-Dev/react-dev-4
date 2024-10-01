@@ -66,6 +66,9 @@ const App = () => {
       setIsDragging(newDragging);
       container.style.cursor = "grabbing";
 
+      // Disable transition during dragging
+      image.style.transition = "none";
+
       const matrix = new WebKitCSSMatrix(
         window.getComputedStyle(image).transform
       );
@@ -138,6 +141,12 @@ const App = () => {
     newDragging[index] = false;
     setIsDragging(newDragging);
     const container: any = containerRefs.current[index];
+    const image: any = imageRefs.current[index];
+
+    // Re-enable transition after dragging stops
+    image.style.transition =
+      "transform 0.2s linear, transform-origin 0.1s linear";
+
     container.style.cursor = "grab";
   };
 
@@ -200,10 +209,22 @@ const App = () => {
             {Array.from({ length: 4 }).map((_, index) => (
               <SwiperSlide
                 key={index}
-                className="overflow-hidden !flex items-center justify-center"
+                style={{
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 <div
-                  className="my_container w-full h-[380px] relative overflow-hidden border border-black"
+                  className="my_container"
+                  style={{
+                    border: "1px solid black",
+                    width: "100%",
+                    height: "380px",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
                   ref={(el) => (containerRefs.current[index] = el)}
                   onMouseDown={(e) => startDragging(index, e)}
                   onMouseMove={(e) => dragging(index, e)}
@@ -225,8 +246,10 @@ const App = () => {
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                       cursor: "grab",
+                      transformOrigin: "center center",
                       transform: `scale(${scalings[index]})`,
-                      transition: "all 0.2s linear",
+                      transition:
+                        "transform 0.2s linear, transform-origin 0.1s linear",
                     }}
                   >
                     <div

@@ -4,6 +4,15 @@
   transform: translateX(-50%) !important;
 }
 
+.swiper-pagination .swiper-pagination-bullet {
+  background: #ffffff !important;
+  opacity: 0.3;
+}
+
+.swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
 .swiper-button-prev,
 .swiper-button-next {
   width: 36px !important;
@@ -18,9 +27,4 @@
   font-size: 16px !important;
   font-weight: 900;
   color: #000000;
-}
-
-.swiper-pagination-bullet {
-  background: #ffffff !important;
-  opacity: 0.3;
 }
