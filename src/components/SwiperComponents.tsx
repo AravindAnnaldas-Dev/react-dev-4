@@ -1,10 +1,10 @@
-import '../App.css';
-import React, { useRef, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "../App.css";
+import React, { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const App = () => {
   const [scalings, setScalings] = useState<number[]>(Array(4).fill(1));
@@ -64,7 +64,7 @@ const App = () => {
       const newDragging = [...isDragging];
       newDragging[index] = true;
       setIsDragging(newDragging);
-      container.style.cursor = 'grabbing';
+      container.style.cursor = "grabbing";
 
       const matrix = new WebKitCSSMatrix(
         window.getComputedStyle(image).transform
@@ -76,7 +76,7 @@ const App = () => {
       setInitialX(newInitialX);
       setInitialY(newInitialY);
 
-      if ('touches' in e) {
+      if ("touches" in e) {
         const newStartX = [...startX];
         const newStartY = [...startY];
         newStartX[index] = e.touches[0].clientX;
@@ -104,10 +104,10 @@ const App = () => {
     if (isDragging[index] && scalings[index] > 1) {
       let deltaX: number, deltaY: number;
 
-      if ('touches' in e) {
+      if ("touches" in e) {
         deltaX = e.touches[0].clientX - startX[index];
         deltaY = e.touches[0].clientY - startY[index];
-        e.preventDefault();
+        e.preventDefault(); // Prevent scrolling while dragging
       } else {
         deltaX = e.clientX - startX[index];
         deltaY = e.clientY - startY[index];
@@ -116,11 +116,18 @@ const App = () => {
       let newX = initialX[index] + deltaX;
       let newY = initialY[index] + deltaY;
 
-      const maxX = ((scalings[index] - 1) * container.offsetWidth) / 2;
-      const maxY = ((scalings[index] - 1) * container.offsetHeight) / 2;
+      const containerRect = container.getBoundingClientRect();
+      const imageRect = image.getBoundingClientRect();
 
-      newX = Math.min(maxX, Math.max(-maxX, newX));
-      newY = Math.min(maxY, Math.max(-maxY, newY));
+      // Calculate the max and min values for X and Y to keep the image in the viewport
+      const maxX = (imageRect.width - containerRect.width) / 2;
+      const minX = -(imageRect.width - containerRect.width) / 2;
+      const maxY = (imageRect.height - containerRect.height) / 2;
+      const minY = -(imageRect.height - containerRect.height) / 2;
+
+      // Ensure the image doesn't move outside the container
+      newX = Math.max(minX, Math.min(maxX, newX));
+      newY = Math.max(minY, Math.min(maxY, newY));
 
       image.style.transform = `translate3d(${newX}px, ${newY}px, 0px) scale(${scalings[index]})`;
     }
@@ -131,12 +138,13 @@ const App = () => {
     newDragging[index] = false;
     setIsDragging(newDragging);
     const container: any = containerRefs.current[index];
-    container.style.cursor = 'grab';
+    container.style.cursor = "grab";
   };
 
   const handleTouchStart = (index: number, e: any) => {
     if (e.touches.length === 2) {
       setInitialDistance(calculateDistance(e.touches));
+    } else if (e.touches.length === 1 && scalings[index] > 1) {
       startDragging(index, e); // Call startDragging for touch events
     }
   };
@@ -145,12 +153,21 @@ const App = () => {
     if (e.touches.length === 2) {
       const newDistance = calculateDistance(e.touches);
       const scale = newDistance / initialDistance;
-
       zoomImage(index, Math.min(Math.max(1, scalings[index] * scale), 4));
-    } else {
+    } else if (e.touches.length === 1 && scalings[index] > 1) {
       dragging(index, e); // Handle dragging when single touch
     }
   };
+
+  // body overflow
+  useEffect(() => {
+    const allScalingsAreOne = scalings.every((scaling) => scaling === 1);
+    document.body.style.overflow = allScalingsAreOne ? "auto" : "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [scalings]);
 
   return (
     <div className="w-full py-[80px]">
@@ -201,19 +218,34 @@ const App = () => {
                     ref={(el) => (imageRefs.current[index] = el)}
                     onDoubleClick={(e) => handleDoubleClick(index, e)}
                     style={{
-                      width: '100%',
-                      height: '100%',
+                      width: "100%",
+                      height: "100%",
                       backgroundImage: `url("https://cdn.prod.website-files.com/660d0573aac44e36d36a0685/6613f471ba4f485ffebf5b33_6464859eba2ea7c68218180b_Unisex%2520Lightweight%2520Hoodie.jpeg")`,
-                      backgroundPosition: 'center',
-                      backgroundSize: '100% 100%',
-                      backgroundRepeat: 'no-repeat',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      transformOrigin: 'center center',
-                      transition: 'transform 0.3s ease',
+                      backgroundSize: "100% 100%",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                      cursor: "grab",
+                      transform: `scale(${scalings[index]})`,
+                      transition: "all 0.2s linear",
                     }}
-                  />
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        zIndex: 10,
+                        color: "#ffffff",
+                        userSelect: "none",
+                        pointerEvents: "none",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Dynamic data
+                    </div>
+                  </div>
                 </div>
               </SwiperSlide>
             ))}

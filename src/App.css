@@ -3,3 +3,24 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
 }
+
+.swiper-button-prev,
+.swiper-button-next {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px 0 #000000;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 16px !important;
+  font-weight: 900;
+  color: #000000;
+}
+
+.swiper-pagination-bullet {
+  background: #ffffff !important;
+  opacity: 0.3;
+}
