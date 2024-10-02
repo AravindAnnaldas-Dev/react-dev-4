@@ -1,3 +1,4 @@
+/* swiper */
 .swiper-pagination {
   width: fit-content !important;
   left: 50% !important;
@@ -27,4 +28,26 @@
   font-size: 16px !important;
   font-weight: 900;
   color: #000000;
+}
+
+/* slick */
+.slick-slider button {
+  width: 32px;
+  height: 32px;
+  background: #3b3b3b;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.slick-slider button:hover {
+  background: #000000;
+  border-radius: 50%;
+}
+
+.slick-slider button.slick-prev {
+  left: 15px;
+}
+
+.slick-slider button.slick-next {
+  right: 15px;
 }
