@@ -1,7 +1,12 @@
 import React from 'react';
+import Accordian from './Accordian/Accordian';
 
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Accordian />
+    </>
+  );
 };
 
 export default App;

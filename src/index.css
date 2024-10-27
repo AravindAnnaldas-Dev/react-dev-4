@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.acc_section {
+  width: 100%;
+  padding-block: 80px;
+}
+
+.acc_container {
+  width: 100%;
+  max-width: 1220px;
+  margin: auto;
+  padding-inline: 16px;
+}
+
+.acc_wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.accordian_ctn {
+  border: 1px solid black;
+  width: 100%;
+  max-width: 600px;
+  display: grid;
+  grid-template-rows: auto 0fr;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.accordian_ctn.acc_open {
+  grid-template-rows: auto 1fr;
+}
+
+.accordian_head {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.accordian_body {
+  overflow: hidden;
+}
+
+.accordian_body_content {
+  padding: 8px 16px;
+}
